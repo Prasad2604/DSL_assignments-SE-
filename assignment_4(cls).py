@@ -4,11 +4,21 @@ class Search:
     def __init__(self,n):
         self.n = n
     
+    def sort(self,arr):
+        for i in range(1,self.n):
+            key = arr[i]
+            j=i-1
+            while j>=0 and key<arr[j]:
+                arr[j+1]=arr[j]
+                j-=1
+            arr[j+1]=key
+    
     def get_list(self):
         l=[]
         for i in range(self.n):
             x = int(input(f"Enter element {i+1} :- "))
             l.append(x)
+        s.sort(l)
         return l
     
     def linerSearch(self,l,key):
@@ -49,6 +59,7 @@ class Search:
 s = Search(int(input("Enter number of elements of list :- ")))
 
 l1 = s.get_list()
+print("Sorted List is :- ",l1)
 
 ans = 'y'
 while(ans.lower()=='y'):
