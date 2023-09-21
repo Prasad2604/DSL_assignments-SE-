@@ -32,16 +32,28 @@ def SentinalSearch(l,key):
         return i
     return -1
 
+def sort(l):
+    for i in range(1,len(l)):
+        key = l[i]
+        j = i-1
+        while j>=0 and key<l[j]:
+            l[j+1] = l[j]
+            j-=1
+        l[j+1]=key
+
 def get_list():
     l=[]
     n = int(input("Enter number of elements of list :- "))
     for i in range(n):
         x = int(input(f"Enter element {i+1} :- "))
         l.append(x)
+    sort(l)
     return l
 
 l1 = get_list()
+print("Sorted List is :- ",l1)
 
+ans = 'y'
 while(ans.lower()=='y'):
     print()
     key = int(input("Enter element which you need to search :- "))
