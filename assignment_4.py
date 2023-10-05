@@ -32,14 +32,15 @@ def SentinalSearch(l,key):
         return i
     return -1
 
-def sort(l):
-    for i in range(1,len(l)):
-        key = l[i]
+def sort(arr):
+    N = len(arr)
+    for i in range(1,N):
+        key = arr[i]
         j = i-1
-        while j>=0 and key<l[j]:
-            l[j+1] = l[j]
+        while j>=0 and key<arr[j]:
+            arr[j+1]=arr[j]
             j-=1
-        l[j+1]=key
+        arr[j+1]=key
 
 def get_list():
     l=[]
@@ -50,7 +51,46 @@ def get_list():
     sort(l)
     return l
 
+def Fib(n):
+    if n==0:
+        return 0
+    elif n==1:
+        return 1
+    else:
+        a = 0
+        b = 1
+        i = 1
+        c=0
+        while(i<n):
+            c=a+b
+            a=b
+            b=c
+            i+=1
+        return c
+
+def FibonacciSearch(arr,key):
+    m=0
+    N = len(arr)
+    while(Fib(m)<N):
+        m+=1
+    offset = -1
+    while(Fib(m)>1):
+        mid = min(offset+Fib(m-2),N)
+        if(key>arr[mid]):
+            m-=1
+            offset = mid
+        elif(key<arr[mid]):
+            m-=2
+        else:
+            return mid
+    if(not Fib(m-1) and arr[offset-1]==key):
+        return offset-1
+    
+    return -1
+        
+
 l1 = get_list()
+print()
 print("Sorted List is :- ",l1)
 
 ans = 'y'
@@ -61,7 +101,8 @@ while(ans.lower()=='y'):
     print("""Choices :-
       1.Linear Search
       2.Sentinal Search
-      3.Binary Search""")
+      3.Binary Search
+      4.Fibonacci Search""")
     print()
     ch = int(input("Enter Choice :- "))
 
@@ -80,10 +121,15 @@ while(ans.lower()=='y'):
         print(f"{key} is present at index :- ",BinarySearch(l1,key))
         print("--------------------------------------")
 
+    elif ch==4:
+        
+        print("---------Fibonacci Search Result-------")
+        print(f"{key} is present at index :- ",FibonacciSearch(l1,key))
+        print("--------------------------------------")
+
     else:
         print("Invalid choice!!")
     
-    ans = input("Do you want to continue(y/n)?? :-")
-
+    ans = input("Do you want to continue(y/n)?? :- ")
 
 
