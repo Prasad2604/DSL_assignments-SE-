@@ -14,7 +14,7 @@ class QuickSort:
         pivot = arr[s]
         cnt=0
         for i in range(s+1,e+1):
-            if(arr[i]<pivot):
+            if(arr[i]<=pivot):
                 cnt+=1
         pivotIndex = s+cnt
         arr[s],arr[pivotIndex]=arr[pivotIndex],arr[s]
@@ -23,10 +23,12 @@ class QuickSort:
         while(i<pivotIndex and j>pivotIndex):
             while(arr[i]<=pivot):
                 i+=1
-            while(arr[j]>=pivot):
+            while(arr[j]>pivot):
                 j-=1
             if(i<pivotIndex and j>pivotIndex):
                 arr[i],arr[j] = arr[j],arr[i]
+                i+=1
+                j-=1
         return pivotIndex
 
     def quickSort(self,arr,s,e):
