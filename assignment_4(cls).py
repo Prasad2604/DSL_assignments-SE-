@@ -3,11 +3,12 @@ class Search:
 
     def __init__(self,n):
         self.n = n
-    
+        
     def sort(self,arr):
-        for i in range(1,self.n):
+        N = len(arr)
+        for i in range(1,N):
             key = arr[i]
-            j=i-1
+            j = i-1
             while j>=0 and key<arr[j]:
                 arr[j+1]=arr[j]
                 j-=1
@@ -18,7 +19,7 @@ class Search:
         for i in range(self.n):
             x = int(input(f"Enter element {i+1} :- "))
             l.append(x)
-        s.sort(l)
+        self.sort(l)
         return l
     
     def linerSearch(self,l,key):
@@ -41,7 +42,6 @@ class Search:
     
 
     def BinarySearch(self,l,key):
-        l.sort()
         s = 0
         e = len(l)-1
         mid = math.floor(s+(e-s)/2)
@@ -55,7 +55,42 @@ class Search:
             mid = math.floor(s+(e-s)/2)
         return -1
     
+    def Fib(self,n):
+        if n==0:
+            return 0
+        elif n==1:
+            return 1
+        else:
+            a = 0
+            b = 1
+            i = 1
+            c=0
+            while(i<n):
+                c=a+b
+                a=b
+                b=c
+                i+=1
+            return c
     
+    def FibonacciSearch(self,arr,key):
+        m=0
+        while(self.Fib(m)<self.n):
+            m+=1
+        offset = -1
+        while(self.Fib(m)>1):
+            mid = min(offset+self.Fib(m-2),self.n)
+            if(key>arr[mid]):
+                m-=1
+                offset = mid
+            elif(key<arr[mid]):
+                m-=2
+            else:
+                return mid
+        if(not self.Fib(m-1) and arr[offset-1]==key):
+            return offset-1
+        
+        return -1
+        
 s = Search(int(input("Enter number of elements of list :- ")))
 
 l1 = s.get_list()
@@ -69,7 +104,8 @@ while(ans.lower()=='y'):
     print("""Choices :-
       1.Linear Search
       2.Sentinal Search
-      3.Binary Search""")
+      3.Binary Search
+      4.Fibonacci Search""")
     print()
     ch = int(input("Enter Choice :- "))
 
@@ -88,7 +124,13 @@ while(ans.lower()=='y'):
         print(f"{key} is present at index :- ",s.BinarySearch(l1,key))
         print("--------------------------------------")
 
+    elif ch==4:
+        
+        print("---------Fibonacci Search Result-------")
+        print(f"{key} is present at index :- ",s.FibonacciSearch(l1,key))
+        print("--------------------------------------")
+
     else:
         print("Invalid choice!!")
     
-    ans = input("Do you want to continue(y/n)?? :-")
+    ans = input("Do you want to continue(y/n)?? :- ")
