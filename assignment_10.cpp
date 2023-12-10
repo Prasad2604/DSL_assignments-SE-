@@ -1,140 +1,74 @@
 #include <iostream>
-#include <cctype>
-
+#include <cstring>
 using namespace std;
 
-class Stack {
-private:
-    int capacity;
-    int top;
-    char* arr;
+bool Operator(char c) {
+    return (c == '+' || c == '-' || c == '*' || c == '/');
+}
 
-public:
-    Stack(){
-        capacity = 0;
-        top = -1;
+//SETTING PRECEDENCE
+int precedence(char op) {
+    if (op == '+' || op == '-')
+        return 1;
+    if (op == '*' || op == '/')
+        return 2;
+    return 0;
+}
 
-    }
-    Stack(int size) {
-        capacity = size;
-        arr = new char[capacity];
-        top = -1;
-    }
+//CONVERTING INFIX TO POSTFIX
+string infixToPostfix(string infix) {
+    string postfix = "";
+    int size_of_stack = 0;
+    char stack_operators[infix.length()];
 
-    ~Stack() {
-        delete[] arr;
-    }
-
-    void push(char value) {
-        if (top == capacity - 1) {
-            cerr << "Error: Stack Overflow" << endl;
-            return;
+    for (char c : infix) {
+        if (c == ' ') {
+            continue;
         }
-        arr[++top] = value;
-    }
-
-    char pop() {
-        if (isEmpty()) {
-            cerr << "Error: Stack Underflow" << endl;
-            return '\0';
+        else if (isalnum(c)) {
+            postfix += c; 
         }
-        return arr[top--];
-    }
-
-    char peek() {
-        if (isEmpty()) {
-            cerr << "Error: Stack is empty" << endl;
-            return '\0';
+        else if (Operator(c)) {
+            while (size_of_stack> 0 && stack_operators[size_of_stack-1]!= '(' &&
+                   precedence(c)<=precedence(stack_operators[size_of_stack- 1]))
+            {
+                postfix += stack_operators[size_of_stack - 1];
+                size_of_stack--;
+            }
+            stack_operators[size_of_stack++] = c; 
         }
-        return arr[top];
-    }
-
-    bool isEmpty() {
-        return top == -1;
-    }
-};
-
-class ExpressionConverter {
-private:
-    Stack operators;
-
-    int precedence(char op) {
-        if (op == '+' || op == '-')
-            return 1;
-        if (op == '*' || op == '/')
-            return 2;
-        return 0; // Assuming all other characters have lower precedence
-    }
-
-    int applyOperator(char op, int operand1, int operand2) {
-        switch (op) {
-            case '+': return operand1 + operand2;
-            case '-': return operand1 - operand2;
-            case '*': return operand1 * operand2;
-            case '/': return operand1 / operand2;
-            default:
-                cerr << "Error: Unexpected operator '" << op << "'" << endl;
-                return 0;
+        else if (c == '(') {
+            stack_operators[size_of_stack++] = c;
         }
-    }
-
-public:
-    ExpressionConverter() {}
-    string infixToPostfix(const string& infix) {
-        string postfix;
-        for (char ch : infix) {
-            if (isalnum(ch)) {
-                postfix += ch;
-            } else if (ch == '(') {
-                operators.push(ch);
-            } else if (ch == ')') {
-                while (!operators.isEmpty() && operators.peek() != '(') {
-                    postfix += operators.pop();
-                }
-                operators.pop();
-            } else {
-                while (!operators.isEmpty() && precedence(ch) <= precedence(operators.peek())) {
-                    postfix += operators.pop();
-                }
-                operators.push(ch);
+        else if (c == ')') {
+            while (size_of_stack> 0 && stack_operators[size_of_stack - 1] != '(') {
+                postfix += stack_operators[size_of_stack - 1];
+                size_of_stack--;
+            }
+            if (size_of_stack > 0 && stack_operators[size_of_stack - 1] == '(') {
+                size_of_stack--;
             }
         }
-
-        while (!operators.isEmpty()) {
-            postfix += operators.pop();
-        }
-
-        return postfix;
     }
 
-    int evaluatePostfix(const string& postfix) {
-        Stack operands(postfix.size());
-        for (char ch : postfix) {
-            if (isalnum(ch)) {
-                operands.push(ch - '0');
-            } else {
-                int operand2 = operands.pop();
-                int operand1 = operands.pop();
-                int result = applyOperator(ch, operand1, operand2);
-                operands.push(result);
-            }
-        }
-        return operands.pop();
+    while (size_of_stack > 0) {
+        postfix += stack_operators[size_of_stack - 1];
+        size_of_stack--;
     }
-};
+
+    return postfix;
+}
+
 
 int main() {
-    ExpressionConverter converter;
+    while(true){
+    string infix;
+    cout << "Enter an infix expression: ";
+    getline(cin, infix);
 
-    string infixExpression;
-    cout << "Enter infix expression: ";
-    getline(cin, infixExpression);
-
-    string postfixExpression = converter.infixToPostfix(infixExpression);
-    cout << "Postfix expression: " << postfixExpression << endl;
-
-    int result = converter.evaluatePostfix(postfixExpression);
-    cout << "Result: " << result << endl;
+    string postfix = infixToPostfix(infix);
+    cout << "Postfix expression: " << postfix <<endl;
+    }
 
     return 0;
 }
